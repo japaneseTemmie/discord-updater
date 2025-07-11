@@ -13,3 +13,8 @@ To install a new version of the `discord` package:
 To install Vencord:
 
 `python3 main.py -vencord -skipdiscord`
+
+Optional flags:
+- `-y`: Do not ask for confirmation.
+- `-nocleanup`: Do not clean up installed `.deb` packages.
+- `-ignoreversion`: Ignore same versions of the `discord` package and install anyways.
