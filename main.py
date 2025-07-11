@@ -90,7 +90,7 @@ def install_package(file: str) -> bool:
         print(f"File {file}\nis not a .deb file!")
         sysexit(0)
 
-    COMMAND = f"sudo dpkg -i {file}"
+    COMMAND = f"sudo dpkg -i {file} || apt --fix-broken install -y"
 
     print(f"Running '{COMMAND}'")
     check_input("Continue? (y/N): ")
