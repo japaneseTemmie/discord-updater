@@ -2,7 +2,7 @@
 Discord auto-updater program for APT-based Linux distros.
 
 # Features
-- Automatically fetch and install a new package if needed.
+- Automatically fetch and install a new `discord` package if needed.
 - Optionally, install [Vencord](https://vencord.dev).
 
 # Requirements
