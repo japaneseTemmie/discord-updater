@@ -8,6 +8,7 @@ Discord auto-updater program for APT-based Linux distros.
 # Requirements
 This project requires the following packages:
 - `python-debian`, `requests`
+
 Install with `pip install python-debian requests`
 
 # Running the script
