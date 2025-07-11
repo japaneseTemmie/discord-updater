@@ -24,3 +24,5 @@ Optional flags:
 - `-y`: Do not ask for confirmation.
 - `-nocleanup`: Do not clean up installed `.deb` packages.
 - `-ignoreversion`: Ignore same versions of the `discord` package and install anyways.
+
+# The developer of this project is not responsible for any damages caused by use or misuse of this script.
