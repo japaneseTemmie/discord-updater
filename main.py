@@ -87,10 +87,10 @@ def get_file(url: str, filepath: str) -> str | bool:
 
 def install_package(file: str) -> bool:
     if not file.endswith(".deb"):
-        print(f"File {file}\nis not a .deb file!")
-        sysexit(0)
+        print(f"File {file} is not a .deb file!")
+        sysexit(1)
 
-    COMMAND = f"sudo dpkg -i {file} || apt --fix-broken install -y"
+    COMMAND = f"dpkg -i {file} || apt --fix-broken install -y"
 
     print(f"Running '{COMMAND}'")
     check_input("Continue? (y/N): ")
@@ -101,7 +101,7 @@ def install_package(file: str) -> bool:
         return True
     else:
         print(f"An error occured while installing {file}\nErr: {stderr}")
-        sysexit(0)
+        sysexit(1)
 
 def cleanup(deb_fp: str) -> None:
     if exists(deb_fp):
@@ -137,12 +137,12 @@ def check_root(reason="pkgs"):
 
             if uid != 0:
                 print("This script requires root priviliges to install packages.")
-                sysexit(0)
+                sysexit(1)
         case "vencord":
                 
             if uid == 0:
                 print("Run the script without root and with the -skipdiscord and -vencord flags")
-                sysexit(0)
+                sysexit(1)
 
 def check_version(discord: str, deb: str, ignore_flag: bool) -> bool:
     if discord is not None and\
