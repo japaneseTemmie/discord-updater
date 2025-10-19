@@ -1,13 +1,15 @@
 from requests import get, HTTPError
 from subprocess import Popen, PIPE
 from sys import argv, exit as sysexit
-from os import getuid, remove, setuid, getenv, setgid, environ
+from os import getuid, remove
 from os.path import join, exists, dirname, basename
 from time import sleep
 from json import load
 from debian.debfile import DebFile
 
 def run(command: str, use_pipe: bool=True) -> tuple[str, str, int] | bool:
+    """ Spawn a subprocess. """
+
     process = Popen(
         command,
         shell=True,
@@ -21,20 +23,25 @@ def run(command: str, use_pipe: bool=True) -> tuple[str, str, int] | bool:
         code = process.wait()
         return code == 0
 
-def get_discord_version():
+def get_discord_version() -> str | None:
+    """ Get Discord version from /usr/share/discord/resources/build_info.json """
+
     path_to_discord = "/usr/share/discord"
 
     if exists(path_to_discord):
         build_file = join(path_to_discord, "resources", "build_info.json")
 
-        with open(build_file, "r") as f:
-            version_info = load(f)
+        if exists(build_file):
+            with open(build_file, "r") as f:
+                version_info = load(f)
 
-        return version_info["version"]
+            return version_info["version"]
     
     return None
 
 def get_deb_version(fp: str):
+    """ Get the version of a Debian package. """
+    
     deb = DebFile(fp)
     return deb.debcontrol().get("Version")
 
@@ -52,7 +59,9 @@ def check_input(prompt: str) -> None:
             print("defaultexit")
             sysexit(0)
 
-def write_file(path: str, r_content) -> bool:
+def write_file(path: str, r_content: bytes) -> bool:
+    """ Write response content (as bytes) to file. """
+
     try:
         with open(path, "wb") as f:
             f.write(r_content)
@@ -63,6 +72,8 @@ def write_file(path: str, r_content) -> bool:
     return True
 
 def get_file(url: str, filepath: str) -> str | bool:
+    """ Download new file. """
+    
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
     }
@@ -86,6 +97,8 @@ def get_file(url: str, filepath: str) -> str | bool:
     return filepath if exists(filepath) else False
 
 def install_package(file: str) -> bool:
+    """ Install a package file. """
+    
     if not file.endswith(".deb"):
         print(f"File {file} is not a .deb file!")
         sysexit(1)
@@ -94,7 +107,7 @@ def install_package(file: str) -> bool:
 
     print(f"Running '{COMMAND}'")
     check_input("Continue? (y/N): ")
-    stdout, stderr, code = run(COMMAND)
+    _, stderr, code = run(COMMAND)
 
     if code == 0:
         print(f"Successfully installed {basename(file)}")
@@ -104,6 +117,8 @@ def install_package(file: str) -> bool:
         sysexit(1)
 
 def cleanup(deb_fp: str) -> None:
+    """ Clean up package. """
+    
     if exists(deb_fp):
         print(f"Cleaning up '{deb_fp}'")
         try:
@@ -112,6 +127,8 @@ def cleanup(deb_fp: str) -> None:
             print(f"An error occured while cleaning up.\nErr: {e}")
 
 def install_vencord(ask: bool) -> bool:
+    """ Install vencord using the install script from github. """
+    
     check_root(reason="vencord")
     
     COMMAND = f'sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"'
@@ -145,11 +162,9 @@ def check_root(reason="pkgs"):
                 sysexit(1)
 
 def check_version(discord: str, deb: str, ignore_flag: bool) -> bool:
-    if discord is not None and\
-        not ignore_flag and\
-        discord == deb:
-            print(f"discord system package is already at the newest version ({discord})")
-            return True
+    if discord is not None and not ignore_flag and discord == deb:
+        print(f"discord system package is already at the newest version ({discord})")
+        return True
     
     return False
 
