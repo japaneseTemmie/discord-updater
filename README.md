@@ -6,10 +6,7 @@ Discord auto-updater program for APT-based Linux distros.
 - Optionally, install [Vencord](https://vencord.dev).
 
 # Requirements
-This project requires the following packages:
-- `python-debian`, `requests`
-
-Install with `pip install python-debian requests`
+Install dependencies with `pip install -r requirements.txt`
 
 # Running the script
 To install a new version of the `discord` package:
